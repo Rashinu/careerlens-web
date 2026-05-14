@@ -1,0 +1,41 @@
+@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Ana Sayfa";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-8 text-center py-5">
+        <h1 class="display-4 fw-bold mb-3">AI Destekli Kariyer Analizi</h1>
+        <p class="lead text-muted mb-4">
+            CV'ni yükle, maaşının piyasada nerede durduğunu öğren,<br />
+            12 aylık kişisel kariyer yol haritanı al.
+        </p>
+        <a href="/Demo" class="btn btn-dark btn-lg px-5">Demo'yu Dene</a>
+        <a href="/swagger" class="btn btn-outline-secondary btn-lg px-5 ms-2" target="_blank">API Docs</a>
+    </div>
+</div>
+
+<div class="row g-4 mt-2">
+    <div class="col-md-4">
+        <div class="card h-100 p-4">
+            <div class="fs-1 mb-2">📄</div>
+            <h5 class="fw-bold">CV Yükle & Parse Et</h5>
+            <p class="text-muted small">PDF veya DOCX yükle. AI pozisyonunu, deneyim yılını ve teknoloji stack'ini otomatik çıkarır.</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100 p-4">
+            <div class="fs-1 mb-2">💰</div>
+            <h5 class="fw-bold">Maaş Karşılaştırma</h5>
+            <p class="text-muted small">Pozisyon + şehir + deneyim bazlı P25/P50/P75 dağılımı. Piyasanın kaçıncı yüzdeliğindesin?</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100 p-4">
+            <div class="fs-1 mb-2">🗺️</div>
+            <h5 class="fw-bold">AI Kariyer Koçu</h5>
+            <p class="text-muted small">Hedef pozisyona git. Eksik beceriler, öğrenme yol haritası ve tahmini maaş aralığı.</p>
+        </div>
+    </div>
+</div>

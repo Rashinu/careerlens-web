@@ -1,0 +1,33 @@
+## .NET
+bin/
+obj/
+*.user
+*.suo
+.vs/
+_ReSharper*/
+*.resharper
+
+## Logs
+logs/
+*.log
+
+## Secrets - asla commit etme
+appsettings.Development.json
+appsettings.Production.json
+.env
+*.env
+
+## Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+
+## NuGet
+*.nupkg
+.nuget/
+
+## OS
+.DS_Store
+Thumbs.db
+desktop.ini

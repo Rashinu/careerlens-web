@@ -1,0 +1,8 @@
+<Solution>
+  <Project Path="CareerLens.API/CareerLens.API.csproj" />
+  <Project Path="CareerLens.Application/CareerLens.Application.csproj" />
+  <Project Path="CareerLens.Domain/CareerLens.Domain.csproj" />
+  <Project Path="CareerLens.Infrastructure/CareerLens.Infrastructure.csproj" />
+  <Project Path="CareerLens.Shared/CareerLens.Shared.csproj" />
+  <Project Path="CareerLens.Tests/CareerLens.Tests.csproj" />
+</Solution>
