@@ -13,6 +13,21 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Railway environment variables -> appsettings override
+var railwayDb = Environment.GetEnvironmentVariable("DATABASE_URL");
+if (!string.IsNullOrEmpty(railwayDb))
+{
+    // Railway PostgreSQL URL: postgresql://user:pass@host:port/db
+    var uri = new Uri(railwayDb);
+    var userInfo = uri.UserInfo.Split(':');
+    var connStr = $"Host={uri.Host};Port={uri.Port};Database={uri.AbsolutePath.TrimStart('/')};Username={userInfo[0]};Password={userInfo[1]};SSL Mode=Require;Trust Server Certificate=true";
+    builder.Configuration["ConnectionStrings:DefaultConnection"] = connStr;
+}
+
+var railwayRedis = Environment.GetEnvironmentVariable("REDIS_URL");
+if (!string.IsNullOrEmpty(railwayRedis))
+    builder.Configuration["ConnectionStrings:Redis"] = railwayRedis;
+
 // Serilog
 Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
