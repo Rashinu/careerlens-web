@@ -28,7 +28,15 @@ if (!string.IsNullOrEmpty(railwayDb))
 
 var railwayRedis = Environment.GetEnvironmentVariable("REDIS_URL");
 if (!string.IsNullOrEmpty(railwayRedis))
-    builder.Configuration["ConnectionStrings:Redis"] = railwayRedis;
+{
+    // rediss://default:password@host:port → host:port,password=xxx,ssl=True,abortConnect=False
+    var redisUri = new Uri(railwayRedis);
+    var redisParts = redisUri.UserInfo.Split(':', 2);
+    var redisPassword = Uri.UnescapeDataString(redisParts.Length > 1 ? redisParts[1] : "");
+    var redisSsl = redisUri.Scheme == "rediss";
+    var redisConnStr = $"{redisUri.Host}:{redisUri.Port},password={redisPassword},ssl={redisSsl},abortConnect=False,connectTimeout=10000";
+    builder.Configuration["ConnectionStrings:Redis"] = redisConnStr;
+}
 
 // Serilog
 Log.Logger = new LoggerConfiguration()
