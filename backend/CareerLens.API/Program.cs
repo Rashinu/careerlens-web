@@ -121,8 +121,16 @@ builder.Services.AddSwaggerGen(c =>
 
 // Health Checks
 builder.Services.AddHealthChecks()
-    .AddNpgSql(builder.Configuration.GetConnectionString("DefaultConnection")!)
-    .AddRedis(builder.Configuration.GetConnectionString("Redis")!);
+    .AddNpgSql(
+        connectionString: builder.Configuration.GetConnectionString("DefaultConnection")!,
+        name: "postgresql",
+        failureStatus: Microsoft.Extensions.Diagnostics.HealthChecks.HealthStatus.Degraded,
+        tags: ["db"])
+    .AddRedis(
+        redisConnectionString: builder.Configuration.GetConnectionString("Redis")!,
+        name: "redis",
+        failureStatus: Microsoft.Extensions.Diagnostics.HealthChecks.HealthStatus.Degraded,
+        tags: ["cache"]);
 
 var app = builder.Build();
 
@@ -152,7 +160,31 @@ app.UseAuthorization();
 
 app.MapControllers();
 app.MapRazorPages();
-app.MapHealthChecks("/health");
+app.MapHealthChecks("/health", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions
+{
+    ResultStatusCodes =
+    {
+        [Microsoft.Extensions.Diagnostics.HealthChecks.HealthStatus.Healthy]   = 200,
+        [Microsoft.Extensions.Diagnostics.HealthChecks.HealthStatus.Degraded]  = 200,
+        [Microsoft.Extensions.Diagnostics.HealthChecks.HealthStatus.Unhealthy] = 200,
+    },
+    ResponseWriter = async (ctx, report) =>
+    {
+        ctx.Response.ContentType = "application/json";
+        var result = System.Text.Json.JsonSerializer.Serialize(new
+        {
+            status = report.Status.ToString(),
+            checks = report.Entries.Select(e => new { name = e.Key, status = e.Value.Status.ToString(), error = e.Value.Exception?.Message })
+        });
+        await ctx.Response.WriteAsync(result);
+    }
+});
+
+app.MapHealthChecks("/health/live", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions
+{
+    Predicate = _ => false,
+    ResponseWriter = async (ctx, _) => await ctx.Response.WriteAsync("Healthy")
+});
 app.UseHangfireDashboard("/hangfire");
 
 app.Run();
