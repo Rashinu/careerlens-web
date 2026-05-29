@@ -17,10 +17,12 @@ var builder = WebApplication.CreateBuilder(args);
 var railwayDb = Environment.GetEnvironmentVariable("DATABASE_URL");
 if (!string.IsNullOrEmpty(railwayDb))
 {
-    // Railway PostgreSQL URL: postgresql://user:pass@host:port/db
+    // PostgreSQL URL: postgresql://user:pass@host[:port]/db?sslmode=...
     var uri = new Uri(railwayDb);
-    var userInfo = uri.UserInfo.Split(':');
-    var connStr = $"Host={uri.Host};Port={uri.Port};Database={uri.AbsolutePath.TrimStart('/')};Username={userInfo[0]};Password={userInfo[1]};SSL Mode=Require;Trust Server Certificate=true";
+    var userInfo = uri.UserInfo.Split(':', 2);
+    var port = uri.Port > 0 ? uri.Port : 5432;
+    var database = uri.AbsolutePath.TrimStart('/').Split('?')[0];
+    var connStr = $"Host={uri.Host};Port={port};Database={database};Username={userInfo[0]};Password={Uri.UnescapeDataString(userInfo[1])};SSL Mode=Require;Trust Server Certificate=true";
     builder.Configuration["ConnectionStrings:DefaultConnection"] = connStr;
 }
 
