@@ -6,9 +6,38 @@ import { Navbar } from '@/components/layout/navbar';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'CareerLens — AI Destekli Kariyer Analizi',
+  title: {
+    default: 'CareerLens — AI ile Kariyerini Şekillendir',
+    template: '%s | CareerLens',
+  },
   description:
-    'CV analizi, maaş karşılaştırma ve kariyer yol haritası. Türkiye pazarı odaklı.',
+    'CV\'ini yükle, maaşının piyasada nerede durduğunu öğren, 12 aylık kariyer yol haritanı al. Türkiye\'nin AI destekli kariyer platformu.',
+  keywords: ['kariyer', 'maaş karşılaştırma', 'CV analizi', 'yapay zeka', 'iş', 'Türkiye', 'roadmap'],
+  authors: [{ name: 'CareerLens' }],
+  openGraph: {
+    type: 'website',
+    locale: 'tr_TR',
+    url: 'https://careerlens-web.vercel.app',
+    siteName: 'CareerLens',
+    title: 'CareerLens — AI ile Kariyerini Şekillendir',
+    description:
+      'CV\'ini yükle, maaşının piyasada nerede durduğunu öğren, 12 aylık kariyer yol haritanı al. Türkiye\'nin AI destekli kariyer platformu.',
+    images: [
+      {
+        url: 'https://careerlens-web.vercel.app/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'CareerLens — AI Destekli Kariyer Analizi',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'CareerLens — AI ile Kariyerini Şekillendir',
+    description: 'CV analizi, maaş karşılaştırma ve kişisel kariyer yol haritası.',
+    images: ['https://careerlens-web.vercel.app/og-image.png'],
+  },
+  metadataBase: new URL('https://careerlens-web.vercel.app'),
 };
 
 export default function RootLayout({
