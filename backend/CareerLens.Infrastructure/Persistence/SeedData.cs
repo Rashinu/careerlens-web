@@ -5,9 +5,19 @@ namespace CareerLens.Infrastructure.Persistence;
 
 public static class SeedData
 {
+    private const int MinExpectedRecords = 150;
+
     public static async Task SeedAsync(CareerLensDbContext context)
     {
-        if (await context.SalaryRecords.AnyAsync()) return;
+        // Yeterli kayıt varsa seed'i atla, az varsa temizle ve yeniden ekle
+        var count = await context.SalaryRecords.CountAsync();
+        if (count >= MinExpectedRecords) return;
+
+        if (count > 0)
+        {
+            context.SalaryRecords.RemoveRange(context.SalaryRecords);
+            await context.SaveChangesAsync();
+        }
 
         var records = new List<SalaryRecord>
         {
