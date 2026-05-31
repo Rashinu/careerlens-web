@@ -2,6 +2,7 @@ import axios from 'axios';
 
 const apiClient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5100',
+  timeout: 60000, // Render free tier cold start için 60 saniye
 });
 
 apiClient.interceptors.request.use((config) => {
