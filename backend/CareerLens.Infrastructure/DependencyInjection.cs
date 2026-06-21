@@ -47,6 +47,17 @@ public static class DependencyInjection
         else
             services.AddScoped<ICareerAiService, CareerAiService>();
 
+        // TÜFE Enflasyon Endeksi — development'ta mock, production'da TCMB EVDS
+        services.AddHttpClient("Tcmb", client =>
+        {
+            client.BaseAddress = new Uri("https://evds2.tcmb.gov.tr/service/evds/");
+            client.Timeout = TimeSpan.FromSeconds(10);
+        });
+        if (isDevelopment)
+            services.AddScoped<ICpiIndexService, MockCpiIndexService>();
+        else
+            services.AddScoped<ICpiIndexService, TcmbCpiIndexService>();
+
         // Background Jobs
         services.AddScoped<ICvProcessingJobService, CvProcessingJobService>();
         services.AddScoped<CvTextExtractionJob>();

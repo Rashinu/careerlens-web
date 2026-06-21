@@ -10,17 +10,20 @@ public class SalaryRecordRepository : GenericRepository<SalaryRecord>, ISalaryRe
 
     public async Task<IReadOnlyList<SalaryRecord>> GetBenchmarkDataAsync(
         string position,
-        string city,
+        string? city,
         int yearsOfExperience,
         int toleranceYears = 2,
         CancellationToken ct = default)
     {
-        return await _dbSet.AsNoTracking()
+        var query = _dbSet.AsNoTracking()
             .Where(s =>
                 s.Position.ToLower().Contains(position.ToLower()) &&
-                s.City.ToLower() == city.ToLower() &&
                 s.YearsOfExperience >= yearsOfExperience - toleranceYears &&
-                s.YearsOfExperience <= yearsOfExperience + toleranceYears)
-            .ToListAsync(ct);
+                s.YearsOfExperience <= yearsOfExperience + toleranceYears);
+
+        if (!string.IsNullOrWhiteSpace(city))
+            query = query.Where(s => s.City.ToLower() == city.ToLower());
+
+        return await query.ToListAsync(ct);
     }
 }

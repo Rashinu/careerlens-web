@@ -7,7 +7,8 @@ public record SalaryBenchmarkDto(
     int SampleCount,
     string Position,
     string City,
-    int YearsOfExperience);
+    int YearsOfExperience,
+    bool IsInflationAdjusted = true);
 
 public record SubmitSalaryRequest(
     string Position,

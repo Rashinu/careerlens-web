@@ -189,10 +189,15 @@ export default function SalaryPage() {
 
           {/* Bar chart */}
           <Card>
-            <CardHeader>
+            <CardHeader className="flex flex-row items-center justify-between gap-2">
               <CardTitle className="text-base">
                 {benchmark.position} — {benchmark.city} ({benchmark.yearsOfExperience} yıl deneyim)
               </CardTitle>
+              {benchmark.isInflationAdjusted && (
+                <span className="text-xs font-medium text-[#2563EB] bg-blue-50 dark:bg-blue-950 px-2 py-1 rounded-full shrink-0">
+                  TÜFE ile enflasyon düzeltmeli
+                </span>
+              )}
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={260}>

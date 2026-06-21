@@ -46,6 +46,7 @@ export interface SalaryBenchmarkDto {
   position: string;
   city: string;
   yearsOfExperience: number;
+  isInflationAdjusted: boolean;
 }
 
 export interface DashboardDto {

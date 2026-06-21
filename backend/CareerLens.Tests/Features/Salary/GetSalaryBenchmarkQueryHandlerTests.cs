@@ -12,13 +12,17 @@ public class GetSalaryBenchmarkQueryHandlerTests
 {
     private readonly Mock<IUnitOfWork> _uow;
     private readonly Mock<ICacheService> _cache;
+    private readonly Mock<ICpiIndexService> _cpiIndex;
     private readonly GetSalaryBenchmarkQueryHandler _handler;
 
     public GetSalaryBenchmarkQueryHandlerTests()
     {
         _uow = MockUnitOfWork.Create();
         _cache = new Mock<ICacheService>();
-        _handler = new GetSalaryBenchmarkQueryHandler(_uow.Object, _cache.Object);
+        _cpiIndex = new Mock<ICpiIndexService>();
+        _cpiIndex.Setup(c => c.GetAdjustmentFactorAsync(It.IsAny<DateTime>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(1.0m);
+        _handler = new GetSalaryBenchmarkQueryHandler(_uow.Object, _cache.Object, _cpiIndex.Object);
     }
 
     [Fact]
@@ -71,6 +75,34 @@ public class GetSalaryBenchmarkQueryHandlerTests
         // Assert
         result.SampleCount.Should().Be(0);
         result.P50.Should().Be(0);
+    }
+
+    [Fact]
+    public async Task Handle_EnflasyonCarpaniVarsa_MaaslariDuzeltir()
+    {
+        // Arrange
+        var query = new GetSalaryBenchmarkQuery(".NET Developer", "İstanbul", 3);
+        var records = new List<SalaryRecord>
+        {
+            SalaryRecord.Create(".NET Developer", "Teknoloji", "İstanbul", 3, 100000, [".NET"]),
+        };
+
+        _cache.Setup(c => c.GetAsync<CareerLens.Shared.DTOs.Salary.SalaryBenchmarkDto>(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync((CareerLens.Shared.DTOs.Salary.SalaryBenchmarkDto?)null);
+
+        Mock.Get(_uow.Object.SalaryRecords)
+            .Setup(r => r.GetBenchmarkDataAsync(query.Position, query.City, query.YearsOfExperience, It.IsAny<int>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(records);
+
+        _cpiIndex.Setup(c => c.GetAdjustmentFactorAsync(It.IsAny<DateTime>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(1.2m);
+
+        // Act
+        var result = await _handler.Handle(query, CancellationToken.None);
+
+        // Assert
+        result.P50.Should().Be(120000);
+        result.IsInflationAdjusted.Should().BeTrue();
     }
 
     [Fact]

@@ -1,4 +1,5 @@
 using CareerLens.Application.Common.Interfaces;
+using CareerLens.Application.Features.Salary;
 using CareerLens.Domain.Interfaces;
 using CareerLens.Shared.Constants;
 using CareerLens.Shared.DTOs.Salary;
@@ -10,11 +11,13 @@ public class GetSalaryBenchmarkQueryHandler : IRequestHandler<GetSalaryBenchmark
 {
     private readonly IUnitOfWork _uow;
     private readonly ICacheService _cache;
+    private readonly ICpiIndexService _cpiIndex;
 
-    public GetSalaryBenchmarkQueryHandler(IUnitOfWork uow, ICacheService cache)
+    public GetSalaryBenchmarkQueryHandler(IUnitOfWork uow, ICacheService cache, ICpiIndexService cpiIndex)
     {
         _uow = uow;
         _cache = cache;
+        _cpiIndex = cpiIndex;
     }
 
     public async Task<SalaryBenchmarkDto> Handle(GetSalaryBenchmarkQuery request, CancellationToken ct)
@@ -29,21 +32,13 @@ public class GetSalaryBenchmarkQueryHandler : IRequestHandler<GetSalaryBenchmark
         if (records.Count == 0)
             return new SalaryBenchmarkDto(0, 0, 0, 0, request.Position, request.City, request.YearsOfExperience);
 
-        var sorted = records.Select(r => r.NetSalary).OrderBy(s => s).ToList();
-        var p25 = Percentile(sorted, 25);
-        var p50 = Percentile(sorted, 50);
-        var p75 = Percentile(sorted, 75);
+        var benchmark = await SalaryBenchmarkCalculator.CalculateAsync(records, _cpiIndex, ct);
 
-        var result = new SalaryBenchmarkDto(p25, p50, p75, records.Count, request.Position, request.City, request.YearsOfExperience);
+        var result = new SalaryBenchmarkDto(
+            benchmark.P25, benchmark.P50, benchmark.P75, records.Count,
+            request.Position, request.City, request.YearsOfExperience, benchmark.IsInflationAdjusted);
         await _cache.SetAsync(cacheKey, result, TimeSpan.FromMinutes(AppConstants.Cache.SalaryBenchmarkCacheMinutes), ct);
 
         return result;
-    }
-
-    private static decimal Percentile(List<decimal> sortedData, int percentile)
-    {
-        if (sortedData.Count == 0) return 0;
-        var index = (int)Math.Ceiling(percentile / 100.0 * sortedData.Count) - 1;
-        return sortedData[Math.Max(0, index)];
     }
 }

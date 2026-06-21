@@ -45,9 +45,19 @@ public class MockCareerAiService : ICareerAiService
             },
             recommendations = new
             {
-                immediate = new[] { "GitHub portföyünü güncelleyin", "LinkedIn profilinizi optimize edin" },
-                shortTerm = new[] { "Kubernetes eğitimi alın", "AWS Solutions Architect sınavına hazırlanın" },
-                longTerm = new[] { "Microservices projesi geliştirin", "Teknik blog yazın" },
+                immediate = new[]
+                {
+                    new { title = "GitHub portföyünü güncelleyin", description = "Son projelerinizi ekleyin.", estimatedMonthlyImpact = (int?)null },
+                    new { title = "LinkedIn profilinizi optimize edin", description = "Hedef pozisyona göre özet yazın.", estimatedMonthlyImpact = (int?)null },
+                },
+                shortTerm = new[]
+                {
+                    new { title = "Kubernetes eğitimi alın", description = "Container orkestrasyonu öğrenin (mock veri).", estimatedMonthlyImpact = (int?)5000 },
+                },
+                longTerm = new[]
+                {
+                    new { title = "Microservices projesi geliştirin", description = "Portföyünüze ekleyin (mock veri).", estimatedMonthlyImpact = (int?)10000 },
+                },
                 courses = new[]
                 {
                     new { name = "Kubernetes ile Container Orkestrasyonu", platform = "Udemy", priority = "high" },

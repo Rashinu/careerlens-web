@@ -39,8 +39,12 @@ public class CareerAiService : ICareerAiService
 
         Hedef Pozisyon: {{$targetPosition}}
 
-        Maaş Benchmark:
+        Maaş Benchmark (TÜFE ile enflasyon düzeltmeli, ülke çapında):
         {{$benchmark}}
+
+        ÖNEMLİ: estimatedSalaryRange ve her önerideki estimatedMonthlyImpact alanlarını YALNIZCA
+        yukarıdaki benchmark'taki p25Salary/p50Salary/p75Salary değerlerine dayanarak tahmin et.
+        sampleCount düşükse (<5) veya benchmark verisi yoksa, bu alanlar için null kullan — tahmin icat etme.
 
         Şu formatta JSON döndür:
         {
@@ -48,12 +52,12 @@ public class CareerAiService : ICareerAiService
           "gapAnalysis": {
             "strengths": ["güçlü yön 1", "güçlü yön 2"],
             "gaps": ["eksik beceri 1", "eksik beceri 2"],
-            "estimatedSalaryRange": {"min": sayı, "max": sayı}
+            "estimatedSalaryRange": {"min": sayı veya null, "max": sayı veya null}
           },
           "recommendations": {
-            "immediate": ["hemen yapılacak 1", "hemen yapılacak 2"],
-            "shortTerm": ["3-6 ay içinde"],
-            "longTerm": ["6-12 ay içinde"],
+            "immediate": [{"title": "...", "description": "...", "estimatedMonthlyImpact": sayı veya null}],
+            "shortTerm": [{"title": "...", "description": "...", "estimatedMonthlyImpact": sayı veya null}],
+            "longTerm": [{"title": "...", "description": "...", "estimatedMonthlyImpact": sayı veya null}],
             "courses": [{"name": "kurs adı", "platform": "platform", "priority": "high/medium/low"}]
           }
         }

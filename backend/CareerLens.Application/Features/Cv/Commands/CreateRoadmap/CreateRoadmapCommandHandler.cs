@@ -1,5 +1,6 @@
 using CareerLens.Application.Common.Exceptions;
 using CareerLens.Application.Common.Interfaces;
+using CareerLens.Application.Features.Salary;
 using CareerLens.Domain.Entities;
 using CareerLens.Domain.Interfaces;
 using CareerLens.Shared.DTOs.Cv;
@@ -12,11 +13,13 @@ public class CreateRoadmapCommandHandler : IRequestHandler<CreateRoadmapCommand,
 {
     private readonly IUnitOfWork _uow;
     private readonly ICareerAiService _aiService;
+    private readonly ICpiIndexService _cpiIndex;
 
-    public CreateRoadmapCommandHandler(IUnitOfWork uow, ICareerAiService aiService)
+    public CreateRoadmapCommandHandler(IUnitOfWork uow, ICareerAiService aiService, ICpiIndexService cpiIndex)
     {
         _uow = uow;
         _aiService = aiService;
+        _cpiIndex = cpiIndex;
     }
 
     public async Task<RoadmapDto> Handle(CreateRoadmapCommand request, CancellationToken ct)
@@ -30,13 +33,21 @@ public class CreateRoadmapCommandHandler : IRequestHandler<CreateRoadmapCommand,
         if (analysis.Status != CvAnalysisStatus.Analyzed || analysis.ParsedData is null)
             throw new InvalidOperationException("CV analizi henüz tamamlanmadı. Lütfen bekleyin.");
 
+        var yearsOfExperience = ExtractYearsOfExperience(analysis.ParsedData);
+
+        // Şehir bilgisi CV'den çıkarılamadığı için ülke çapında (city: null) benchmark alınır.
         var benchmarkRecords = await _uow.SalaryRecords.GetBenchmarkDataAsync(
-            request.TargetPosition, "İstanbul", 3, ct: ct);
+            request.TargetPosition, city: null, yearsOfExperience, ct: ct);
+
+        var benchmark = await SalaryBenchmarkCalculator.CalculateAsync(benchmarkRecords, _cpiIndex, ct);
 
         var benchmarkJson = JsonSerializer.Serialize(new
         {
             sampleCount = benchmarkRecords.Count,
-            averageSalary = benchmarkRecords.Count > 0 ? (double)benchmarkRecords.Average(r => r.NetSalary) : 0,
+            p25Salary = benchmark.P25,
+            p50Salary = benchmark.P50,
+            p75Salary = benchmark.P75,
+            isInflationAdjusted = benchmark.IsInflationAdjusted,
             position = request.TargetPosition
         });
 
@@ -78,5 +89,17 @@ public class CreateRoadmapCommandHandler : IRequestHandler<CreateRoadmapCommand,
             roadmap.GapAnalysis,
             roadmap.Recommendations,
             roadmap.GeneratedAt);
+    }
+
+    private static int ExtractYearsOfExperience(string parsedDataJson)
+    {
+        try
+        {
+            var root = JsonSerializer.Deserialize<JsonElement>(parsedDataJson);
+            if (root.TryGetProperty("yearsOfExperience", out var el) && el.ValueKind == JsonValueKind.Number)
+                return el.GetInt32();
+        }
+        catch { }
+        return 3; // varsayılan: orta seviye deneyim
     }
 }
