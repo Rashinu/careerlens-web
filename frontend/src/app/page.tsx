@@ -8,37 +8,40 @@ import {
   BarChart2,
   Map,
   ChevronRight,
+  ShieldCheck,
+  TrendingUp,
+  Users,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const features = [
   {
-    icon: FileSearch,
-    title: "CV Analizi",
+    icon: Map,
+    title: "Sadece Maas Degil, Yol Haritasi",
     description:
-      "Yapay zeka CV'nizi saniyeler icinde analiz eder, guclu ve gelisime acik yonlerinizi belirler.",
+      "Maas karsilastirma araclari sadece nerede durdugunu gosterir. CareerLens, oraya nasil ulasacagini da gosterir: guclu/eksik yonlerin, somut adimlar.",
+    color: "text-emerald-500",
+    bg: "bg-emerald-500/10",
+  },
+  {
+    icon: TrendingUp,
+    title: "Her Onerinin Maas Etkisi",
+    description:
+      "\"Bu egitimi al\" demekle yetinmeyiz — \"+5.000 TL/ay\" gibi somut bir tahmin veririz, gercek piyasa verisine dayanarak.",
     color: "text-blue-500",
     bg: "bg-blue-500/10",
   },
   {
     icon: BarChart2,
-    title: "Maas Karsilastirma",
+    title: "TUFE Duzeltmeli Maas Verisi",
     description:
-      "Pozisyon, sehir ve deneyime gore gercek piyasa verilerini anonim olarak karsilastirin.",
+      "Pozisyon, sehir ve deneyime gore gercek piyasa verilerini anonim olarak ve enflasyona gore duzeltilmis karsilastirin.",
     color: "text-violet-500",
     bg: "bg-violet-500/10",
   },
-  {
-    icon: Map,
-    title: "Kariyer Yol Haritasi",
-    description:
-      "Hedef pozisyonunuza ulasmak icin kisilestirilmis adim adim oneri plani alin.",
-    color: "text-emerald-500",
-    bg: "bg-emerald-500/10",
-  },
 ];
 
-const steps = [
+const roadmapSteps = [
   {
     number: "01",
     icon: Upload,
@@ -51,7 +54,7 @@ const steps = [
     number: "02",
     icon: Sparkles,
     title: "AI Analiz Etsin",
-    desc: "Yapay zeka CV'nizi ayristica analiz eder ve puanlar.",
+    desc: "Yapay zeka CV'nizi ayristirir, deneyim ve teknolojilerinizi cikarir.",
     color: "text-violet-500",
     bg: "bg-violet-500/10",
   },
@@ -59,7 +62,34 @@ const steps = [
     number: "03",
     icon: MapPin,
     title: "Yol Haritani Al",
-    desc: "Hedef pozisyon belirle, kisisel kariyer planinizi gorun.",
+    desc: "Hedef pozisyon belirle; gucu/eksigini ve her adimin tahmini maas etkisini (orn. +5.000 TL/ay) gor.",
+    color: "text-emerald-500",
+    bg: "bg-emerald-500/10",
+  },
+];
+
+const salarySteps = [
+  {
+    number: "01",
+    icon: Users,
+    title: "Anonim Paylasim",
+    desc: "Kimlik bilgisi olmadan pozisyon, sehir, deneyim ve net maasinizi paylasin.",
+    color: "text-blue-500",
+    bg: "bg-blue-500/10",
+  },
+  {
+    number: "02",
+    icon: ShieldCheck,
+    title: "Dogrulama ve Filtreleme",
+    desc: "Istatistiksel anlamlilik icin minimum ornek esigi uygulanir, asiri uc degerler ayiklanir.",
+    color: "text-violet-500",
+    bg: "bg-violet-500/10",
+  },
+  {
+    number: "03",
+    icon: TrendingUp,
+    title: "TUFE ile Duzeltme",
+    desc: "TCMB verileriyle enflasyon duzeltmesi yapilir; eski ve yeni kayitlar adil karsilastirilir.",
     color: "text-emerald-500",
     bg: "bg-emerald-500/10",
   },
@@ -83,19 +113,20 @@ export default function HomePage() {
         <div className="mx-auto max-w-5xl px-4 py-28 text-center">
           <span className="mb-6 inline-flex items-center gap-1.5 rounded-full border border-blue-200 bg-blue-50 px-4 py-1.5 text-sm font-medium text-blue-700 dark:border-blue-800 dark:bg-blue-950/60 dark:text-blue-300">
             <Sparkles className="h-3.5 w-3.5" />
-            Turkiye pazari odakli AI kariyer platformu
+            Maas karsilastirmanin otesinde: kisisel kariyer yol haritasi
           </span>
 
           <h1 className="mb-6 text-5xl font-extrabold tracking-tight text-foreground sm:text-6xl lg:text-7xl">
-            Kariyerinizi{" "}
+            Maasini gor,{" "}
             <span className="bg-gradient-to-r from-blue-500 via-violet-500 to-blue-600 bg-clip-text text-transparent">
-              AI ile sekillendirin
+              oraya nasil ulasacagini ogren
             </span>
           </h1>
 
           <p className="mx-auto mb-10 max-w-2xl text-lg leading-relaxed text-muted-foreground">
-            CV analizinden maas karsilastirmasina, kariyer yol haritasina
-            kadar — tum kariyer kararlari icin veriye dayali icgorular.
+            Diger araclar sadece piyasa maasini gosterir. CareerLens CV'ni analiz eder,
+            hedef pozisyona giden adimlari ve her adimin tahmini maas etkisini
+            (orn. +5.000 TL/ay) gosterir.
           </p>
 
           <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
@@ -163,40 +194,109 @@ export default function HomePage() {
               Nasil Calisir?
             </h2>
             <p className="text-muted-foreground">
-              Uc adimda kariyer analizinizi tamamlayin.
+              Iki akis, tek platform: kisisel kariyer yol haritan ve guvenilir piyasa maas verisi.
             </p>
           </div>
 
-          <div className="relative grid grid-cols-1 gap-10 md:grid-cols-3">
-            {/* Connector line (desktop only) */}
-            <div
-              aria-hidden
-              className="absolute top-8 left-1/6 right-1/6 hidden h-px bg-gradient-to-r from-blue-200 via-violet-200 to-emerald-200 dark:from-blue-900 dark:via-violet-900 dark:to-emerald-900 md:block"
-            />
+          {/* Roadmap flow */}
+          <div className="mb-16">
+            <h3 className="mb-8 text-center text-sm font-semibold uppercase tracking-wide text-blue-600 dark:text-blue-400">
+              Kariyer Yol Haritasi
+            </h3>
+            <div className="grid grid-cols-1 gap-10 md:grid-cols-3">
+              {roadmapSteps.map((step) => (
+                <div
+                  key={step.number}
+                  className="relative flex flex-col items-center text-center"
+                >
+                  <div className="relative mb-5">
+                    <span className="absolute -top-3 -right-3 text-3xl font-extrabold leading-none text-muted-foreground/20">
+                      {step.number}
+                    </span>
+                    <div
+                      className={`flex h-16 w-16 items-center justify-center rounded-2xl border-2 border-border ${step.bg} shadow-sm`}
+                    >
+                      <step.icon className={`h-7 w-7 ${step.color}`} />
+                    </div>
+                  </div>
+                  <h4 className="mb-2 text-lg font-semibold text-foreground">
+                    {step.title}
+                  </h4>
+                  <p className="text-sm leading-relaxed text-muted-foreground">
+                    {step.desc}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
 
-            {steps.map((step) => (
+          {/* Salary data flow */}
+          <div>
+            <h3 className="mb-8 text-center text-sm font-semibold uppercase tracking-wide text-violet-600 dark:text-violet-400">
+              Maas Verisi Nasil Guvenilir Hale Gelir?
+            </h3>
+            <div className="relative grid grid-cols-1 gap-10 md:grid-cols-3">
               <div
-                key={step.number}
-                className="relative flex flex-col items-center text-center"
-              >
-                <div className="relative mb-5">
-                  <span className="absolute -top-3 -right-3 text-3xl font-extrabold leading-none text-muted-foreground/20">
-                    {step.number}
-                  </span>
-                  <div
-                    className={`flex h-16 w-16 items-center justify-center rounded-2xl border-2 border-border ${step.bg} shadow-sm`}
-                  >
-                    <step.icon className={`h-7 w-7 ${step.color}`} />
+                aria-hidden
+                className="absolute top-8 left-1/6 right-1/6 hidden h-px bg-gradient-to-r from-blue-200 via-violet-200 to-emerald-200 dark:from-blue-900 dark:via-violet-900 dark:to-emerald-900 md:block"
+              />
+              {salarySteps.map((step) => (
+                <div
+                  key={step.number}
+                  className="relative flex flex-col items-center text-center"
+                >
+                  <div className="relative mb-5">
+                    <span className="absolute -top-3 -right-3 text-3xl font-extrabold leading-none text-muted-foreground/20">
+                      {step.number}
+                    </span>
+                    <div
+                      className={`flex h-16 w-16 items-center justify-center rounded-2xl border-2 border-border ${step.bg} shadow-sm`}
+                    >
+                      <step.icon className={`h-7 w-7 ${step.color}`} />
+                    </div>
+                  </div>
+                  <h4 className="mb-2 text-lg font-semibold text-foreground">
+                    {step.title}
+                  </h4>
+                  <p className="text-sm leading-relaxed text-muted-foreground">
+                    {step.desc}
+                  </p>
+                </div>
+              ))}
+            </div>
+
+            {/* Trust strip — inspired by SalaryInsights' methodology transparency */}
+            <div className="mt-12 rounded-2xl border border-border bg-muted/40 p-6 sm:p-8">
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
+                <div className="flex items-start gap-3">
+                  <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-blue-500" />
+                  <div>
+                    <p className="text-sm font-semibold text-foreground">Tam Anonimlik</p>
+                    <p className="text-xs leading-relaxed text-muted-foreground">
+                      Maas kayitlari hicbir zaman hesabinizla iliskilendirilmez.
+                    </p>
                   </div>
                 </div>
-                <h3 className="mb-2 text-lg font-semibold text-foreground">
-                  {step.title}
-                </h3>
-                <p className="text-sm leading-relaxed text-muted-foreground">
-                  {step.desc}
-                </p>
+                <div className="flex items-start gap-3">
+                  <Users className="mt-0.5 h-5 w-5 shrink-0 text-violet-500" />
+                  <div>
+                    <p className="text-sm font-semibold text-foreground">Minimum Ornek Esigi</p>
+                    <p className="text-xs leading-relaxed text-muted-foreground">
+                      Istatistiksel guvenilirlik icin yetersiz veri varsa sonuc gosterilmez.
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <TrendingUp className="mt-0.5 h-5 w-5 shrink-0 text-emerald-500" />
+                  <div>
+                    <p className="text-sm font-semibold text-foreground">TUFE Duzeltmeli</p>
+                    <p className="text-xs leading-relaxed text-muted-foreground">
+                      TCMB enflasyon verisiyle guncellenir, eski kayitlar yaniltici olmaz.
+                    </p>
+                  </div>
+                </div>
               </div>
-            ))}
+            </div>
           </div>
         </div>
       </section>
@@ -248,6 +348,12 @@ export default function HomePage() {
             </Link>
             <Link href="/login" className="hover:text-foreground transition-colors">
               Giris Yap
+            </Link>
+            <Link href="/gizlilik" className="hover:text-foreground transition-colors">
+              Gizlilik
+            </Link>
+            <Link href="/kosullar" className="hover:text-foreground transition-colors">
+              Kosullar
             </Link>
           </div>
         </div>

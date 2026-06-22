@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { ThemeProvider } from 'next-themes';
 import { Toaster } from 'sonner';
+import { Analytics } from '@vercel/analytics/next';
 import { AuthProvider } from '@/context/auth-context';
 import { Navbar } from '@/components/layout/navbar';
 import './globals.css';
@@ -55,6 +56,7 @@ export default function RootLayout({
             <Toaster richColors position="top-right" />
           </AuthProvider>
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );
